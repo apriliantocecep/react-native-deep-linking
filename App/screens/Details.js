@@ -36,13 +36,31 @@ class DetailsScreen extends React.Component {
 
   componentDidMount() {
     const item = this.props.navigation.getParam("item", {});
-    const data = [];
+    
+    if (Object.keys(item).length === 0) {
+      const personId = this.props.navigation.getParam('personId', 1);
 
-    Object.keys(item).forEach(key => {
-      data.push({ key, value: `${item[key]}` });
-    });
+      fetch(`https://swapi.co/api/people/${personId}`)
+      .then(res => res.json())
+      .then(res => {
+        const data = [];
 
-    this.setState({ data });
+        Object.keys(res).forEach(key => {
+          data.push({ key, value: `${res[key]}` });
+        });
+
+        this.setState({ data });
+      })
+      
+    } else {
+      const data = [];
+      
+      Object.keys(item).forEach(key => {
+        data.push({ key, value: `${item[key]}` });
+      });
+  
+      this.setState({ data });
+    }
   }
 
   render() {
